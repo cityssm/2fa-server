@@ -1,0 +1,7 @@
+*.db
+*.db-journal
+*.log
+
+bin/daemon/*
+data/config.*
+node_modules/

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html id="is-manage-page" lang="en">
+
+<head>
+  <title>
+    Manage: Two-Factor Authentication (2FA) Setup
+  </title>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="csrf-token" content="<%= csrfToken %>">
+
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="stylesheets/style.min.css" />
+</head>
+
+<body>
+  <main class="container px-2">
+    <h1 class="title is-2 has-text-centered">Two-Factor Authentication Management</h1>
+
+    <% if (twoFactorUser.allowUserReset) { %>
+      <div class="box is-hidden" id="container--secretKeyInfo">
+        <div class="columns">
+          <div class="column">
+            <h2 class="title is-4 has-text-centered">Your Secret Key</h2>
+            <div class="message is-warning">
+              <div class="message-body">
+                Be sure to record this secret key on your mobile device now.
+                It will not be available next time to log in.
+              </div>
+            </div>
+          </div>
+          <div class="column has-text-centered" id="container--secretKey">
+
+          </div>
+        </div>
+      </div>
+    <% } %>
+
+    <% if (twoFactorUser.enforce2FA) { %>
+      <div class="columns is-desktop"><div class="column">
+    <% } %>
+
+    <h2 class="title is-3">Current Status</h2>
+    <% if (twoFactorUser.enforce2FA) { %>
+      <div class="message is-success">
+        <div class="message-body">
+          <div class="columns is-mobile">
+            <div class="column is-narrow">
+              <i class="fas fa-check fa-5x fa-fw" data-fa-transform="shrink-8 down-3" data-fa-mask="fas fa-lock"></i>
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-5"><%= user.userName %> is protected by Two-Factor Authentication!</p>
+              <p>Thank you for taking security seriously.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% } else { %>
+      <div class="message is-danger">
+        <div class="message-body">
+          <div class="columns is-mobile">
+            <div class="column is-narrow">
+              <i class="fas fa-exclamation-triangle fa-5x fa-fw" data-fa-transform="shrink-10 down-3" data-fa-mask="fas fa-lock"></i>
+            </div>
+            <div class="column">
+              <p class="has-text-weight-bold is-size-5"><%= user.userName %> is not protected by Two-Factor Authentication!</p>
+              <p>Please consider protecting your account by enabling two-factor authentication now.</p>
+              <p class="has-text-right mt-2">
+                <button class="button is-success" id="button--enable" type="button">
+                  <span class="icon"><i class="fas fa-key" aria-hidden="true"></i></span>
+                  <span>Enable 2FA Now</span>
+                </button>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% } %>
+
+    <% if (twoFactorUser.enforce2FA) { %>
+      </div><div class="column">
+        <h2 class="title is-3">Secret Key</h2>
+
+        <% if (twoFactorUser.allowUserReset) { %>
+          <div class="message is-info">
+            <div class="message-body">
+              <div class="columns is-mobile">
+                <div class="column is-narrow">
+                  <i class="fas fa-magic fa-fw fa-5x" aria-hidden="true"></i>
+                </div>
+                <div class="column">
+                  <p class="has-text-weight-bold is-size-5">Reset your secret key now.</p>
+                  <p>Once reset, your key will be temporarily visible to you.  Please have your mobile device ready to record the key.</p>
+                  <p class="has-text-right mt-2">
+                    <button class="button is-info" id="button--reset" type="button">
+                      <span class="icon"><i class="fas fa-redo" aria-hidden="true"></i></span>
+                      <span>Reset Secret Key</span>
+                    </button>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% } %>
+
+        <div class="message is-warning">
+          <div class="message-body">
+            <div class="columns is-mobile">
+              <div class="column is-narrow">
+                <i class="fas fa-key fa-fw fa-5x" aria-hidden="true"></i>
+              </div>
+              <div class="column">
+                <p class="has-text-weight-bold is-size-5">Your secret key is protected.</p>
+                <p>To reduce risk, you are not able to view the currently active key.</p>
+                <p>
+                  <span class="is-italic">Has your key been compromised?</span>
+                  Void your key as soon as possible, and contact IT for assistance generating a new one.
+                </p>
+                <p class="has-text-right mt-2">
+                  <button class="button is-warning" id="button--void" type="button">
+                    <span class="icon"><i class="fas fa-times" aria-hidden="true"></i></span>
+                    <span>Void Secret Key</span>
+                  </button>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+    <% } %>
+  </main>
+  <script>
+    window.exports = window.exports || {};
+  </script>
+  <script src="lib/bulma-webapp-js/cityssm.min.js"></script>
+  <script src="javascripts/manage.min.js"></script>
+  <script src="lib/fa5/js/all.min.js" defer async></script>
+</body>
+
+</html>
