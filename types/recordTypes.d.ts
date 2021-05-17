@@ -9,5 +9,7 @@ declare module "express-session" {
 export interface TwoFactorAuthUser {
     userName?: string;
     enforce2FA: boolean;
+    secretKey?: string;
     allowUserReset: boolean;
+    isRecentlySet: boolean;
 }

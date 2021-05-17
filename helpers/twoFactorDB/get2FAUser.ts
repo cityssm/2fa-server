@@ -16,18 +16,23 @@ export const get2FAUser = async (userName: string): Promise<TwoFactorAuthUser> =
 
     const userResult = await pool.request()
       .input("userName", userName)
-      .query("select enforce2FA, allowUserReset" +
+      .query("select enforce2FA, secretKey, allowUserReset, isRecentlySet" +
         " from TwoFactor" +
         " where userName = @userName");
 
     if (!userResult.recordset || userResult.recordset.length === 0) {
       return {
         enforce2FA: false,
-        allowUserReset: false
+        allowUserReset: false,
+        isRecentlySet: false
       };
     }
 
     const user = userResult.recordset[0] as TwoFactorAuthUser;
+
+    if (!user.isRecentlySet) {
+      delete user.secretKey;
+    }
 
     return user;
 

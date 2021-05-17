@@ -10,8 +10,6 @@ export const handler: RequestHandler = async (req, res) => {
   const userName = req.session.user.userName;
   const secretKey = authenticator.generateSecret();
 
-  console.log(secretKey);
-
   const success = await updateSecretKey(userName, secretKey);
 
   if (success) {

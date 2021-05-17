@@ -14,7 +14,7 @@ export const updateSecretKey = async (userName, secretKey) => {
             " allowUserReset = 0" +
             " where userName = @userName" +
             " and enforce2FA = 1" +
-            " and allowUserReset = 1");
+            " and (allowUserReset = 1 or isRecentlySet = 1)");
         return true;
     }
     catch (e) {

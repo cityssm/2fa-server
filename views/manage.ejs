@@ -20,20 +20,23 @@
   <main class="container px-2">
     <h1 class="title is-2 has-text-centered">Two-Factor Authentication Management</h1>
 
-    <% if (twoFactorUser.allowUserReset) { %>
-      <div class="box is-hidden" id="container--secretKeyInfo">
+    <% if (twoFactorUser.allowUserReset || twoFactorUser.isRecentlySet) { %>
+      <div class="box <%= (twoFactorUser.isRecentlySet ? "" : " is-hidden") %>" id="container--secretKeyInfo">
         <div class="columns">
           <div class="column">
             <h2 class="title is-4 has-text-centered">Your Secret Key</h2>
             <div class="message is-warning">
               <div class="message-body">
-                Be sure to record this secret key on your mobile device now.
-                It will not be available next time to log in.
+                <strong>Be sure to record this secret key on your mobile device now.</strong><br />
+                It is only available to view for a brief amount of time.
               </div>
             </div>
           </div>
           <div class="column has-text-centered" id="container--secretKey">
-
+            <% if (twoFactorUser.isRecentlySet && twoFactorUser.secretKey) { %>
+              <img src="<%- qrCode %>" alt="<%= twoFactorUser.secretKey %>" /><br />
+              <span class="is-size-4 has-text-weight-bold"><%= twoFactorUser.secretKey %></span>
+            <% } %>
           </div>
         </div>
       </div>
@@ -84,7 +87,7 @@
       </div><div class="column">
         <h2 class="title is-3">Secret Key</h2>
 
-        <% if (twoFactorUser.allowUserReset) { %>
+        <% if (twoFactorUser.allowUserReset || twoFactorUser.isRecentlySet) { %>
           <div class="message is-info">
             <div class="message-body">
               <div class="columns is-mobile">
@@ -114,9 +117,11 @@
               </div>
               <div class="column">
                 <p class="has-text-weight-bold is-size-5">Your secret key is protected.</p>
-                <p>To reduce risk, you are not able to view the currently active key.</p>
+                <% if (!twoFactorUser.isRecentlySet) { %>
+                  <p>To reduce risk, you are not able to view the currently active key.</p>
+                <% } %>
                 <p>
-                  <span class="is-italic">Has your key been compromised?</span>
+                  <span class="is-italic">Has your key been compromised?</span><br />
                   Void your key as soon as possible, and contact IT for assistance generating a new one.
                 </p>
                 <p class="has-text-right mt-2">
@@ -131,6 +136,48 @@
         </div>
       </div></div>
     <% } %>
+
+    <h2 class="title is-3">About Two-Factor Authentication (2FA)</h2>
+
+    <div class="content">
+      <p>Wikipedia defines <a href="https://en.wikipedia.org/wiki/Multi-factor_authentication" target="_blank" rel="nofollow noreferrer">Multi-Factor Authentication</a> as:</p>
+
+      <blockquote>
+        <p>
+          An electronic authentication method in which a device user is granted access to a website or application
+          only after successfully presenting two or more pieces of evidence (or factors) to an authentication mechanism:
+        </p>
+        <ul>
+          <li>knowledge (something only the user knows),</li>
+          <li>possession (something only the user has), and</li>
+          <li>inherence (something only the user is).</li>
+        </ul>
+      </blockquote>
+
+      <p>
+        This system uses industry standard two-factor authentication,
+        and supports many two-factor authentication apps on both Android and iOS devices.
+      </p>
+
+      <div class="columns">
+        <div class="column has-text-centered">
+          <h3 class="title is-5">Microsoft Authenticator</h3>
+          <img src="images/microsoftAuthenticator.png" alt="Microsoft Authenticator App Icon" /><br />
+          <a href="https://play.google.com/store/apps/details?id=com.azure.authenticator" target="_blank" rel="noreferrer nofollow">Google Play</a><br />
+          <a href="https://apps.apple.com/ca/app/microsoft-authenticator/id983156458" target="_blank" rel="noreferrer nofollow">Apple App Store</a>
+        </div>
+        <div class="column has-text-centered">
+          <h3 class="title is-5">Google Authenticator</h3>
+          <img src="images/googleAuthenticator.png" alt="Google Authenticator App Icon" /><br />
+          <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="_blank" rel="noreferrer nofollow">Google Play</a><br />
+          <a href="https://apps.apple.com/ca/app/google-authenticator/id388497605" target="_blank" rel="noreferrer nofollow">Apple App Store</a>
+        </div>
+        <div class="column has-text-centered is-align-self-center has-text-weight-bold">
+          Any app that supports<br />
+          Time-based One Time Passwords (TOTP)
+        </div>
+      </div>
+    </div>
   </main>
   <script>
     window.exports = window.exports || {};
