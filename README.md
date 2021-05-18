@@ -30,7 +30,7 @@ compatible with popular authenticator apps.
 -   [Google Authenticator on Google Play](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2)
 -   [Google Authenticator on Apple App Store](https://apps.apple.com/ca/app/google-authenticator/id388497605)
 
-### Need to Validate Tokens in Your Application?
+## Need to Validate Tokens in Your Application?
 
 There are many libraries that can be used to validate TOTP tokens.
 
