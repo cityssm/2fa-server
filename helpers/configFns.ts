@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/prevent-abbreviations */
+
 import type * as sqlTypes from "mssql";
 import type { ADWebAuthConfig } from "@cityssm/ad-web-auth-connector/types";
 
@@ -11,11 +13,11 @@ Object.freeze(config);
  */
 
 
-const configOverrides: { [propertyName: string]: any } = {};
+const configOverrides: { [propertyName: string]: unknown } = {};
 
-const configFallbackValues = new Map<string, any>();
+const configFallbackValues = new Map<string, unknown>();
 
-configFallbackValues.set("application.httpPort", 27272);
+configFallbackValues.set("application.httpPort", 27_272);
 
 configFallbackValues.set("session.cookieName", "2fa-server-user-sid");
 configFallbackValues.set("session.secret", "cityssm/2fa-server");
@@ -35,9 +37,9 @@ export function getProperty(propertyName: "mssqlConfig"): sqlTypes.config;
 export function getProperty(propertyName: "adWebAuthConfig"): ADWebAuthConfig;
 
 
-export function getProperty(propertyName: string): any {
+export function getProperty(propertyName: string): unknown {
 
-  if (configOverrides.hasOwnProperty(propertyName)) {
+  if (Object.prototype.hasOwnProperty.call(configOverrides, propertyName)) {
     return configOverrides[propertyName];
   }
 
@@ -45,14 +47,13 @@ export function getProperty(propertyName: string): any {
 
   let currentObj = config;
 
-  for (let index = 0; index < propertyNameSplit.length; index += 1) {
+  for (const element of propertyNameSplit) {
 
-    currentObj = currentObj[propertyNameSplit[index]];
+    currentObj = currentObj[element];
 
     if (!currentObj) {
       return configFallbackValues.get(propertyName);
     }
-
   }
 
   return currentObj;

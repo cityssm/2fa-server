@@ -8,7 +8,7 @@ import csurf from "csurf";
 import rateLimit from "express-rate-limit";
 import session from "express-session";
 import sqlite from "connect-sqlite3";
-import * as configFns from "./helpers/configFns.js";
+import * as configFunctions from "./helpers/configFns.js";
 import routerLogin from "./routes/login.js";
 import routerManage from "./routes/manage.js";
 import debug from "debug";
@@ -40,51 +40,51 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/lib/bulma-webapp-js", express.static(path.join(__dirname, "node_modules", "@cityssm", "bulma-webapp-js", "dist")));
 app.use("/lib/fa5", express.static(path.join(__dirname, "node_modules", "@fortawesome", "fontawesome-free")));
 const SQLiteStore = sqlite(session);
-const sessionCookieName = configFns.getProperty("session.cookieName");
+const sessionCookieName = configFunctions.getProperty("session.cookieName");
 app.use(session({
     store: new SQLiteStore({
         dir: "data",
         db: "sessions.db"
     }),
     name: sessionCookieName,
-    secret: configFns.getProperty("session.secret"),
+    secret: configFunctions.getProperty("session.secret"),
     resave: true,
     saveUninitialized: false,
     rolling: true,
     cookie: {
-        maxAge: configFns.getProperty("session.maxAgeMillis"),
+        maxAge: configFunctions.getProperty("session.maxAgeMillis"),
         sameSite: "strict"
     }
 }));
-app.use((req, res, next) => {
-    if (req.cookies[sessionCookieName] && !req.session.user) {
-        res.clearCookie(sessionCookieName);
+app.use((request, response, next) => {
+    if (request.cookies[sessionCookieName] && !request.session.user) {
+        response.clearCookie(sessionCookieName);
     }
     next();
 });
-const sessionChecker = (req, res, next) => {
-    if (req.session.user && req.cookies[sessionCookieName]) {
+const sessionChecker = (request, response, next) => {
+    if (request.session.user && request.cookies[sessionCookieName]) {
         return next();
     }
-    return res.redirect("/login");
+    return response.redirect("/login");
 };
-app.use(function (req, res, next) {
-    res.locals.configFns = configFns;
-    res.locals.user = req.session.user;
-    res.locals.csrfToken = req.csrfToken();
+app.use(function (request, response, next) {
+    response.locals.configFns = configFunctions;
+    response.locals.user = request.session.user;
+    response.locals.csrfToken = request.csrfToken();
     next();
 });
-app.get("/", sessionChecker, (_req, res) => {
-    res.redirect("/manage");
+app.get("/", sessionChecker, (_request, response) => {
+    response.redirect("/manage");
 });
 app.use("/login", routerLogin);
-app.get("/logout", (req, res) => {
-    if (req.session.user && req.cookies[sessionCookieName]) {
-        req.session.destroy(null);
-        req.session = null;
-        res.clearCookie(sessionCookieName);
+app.get("/logout", (request, response) => {
+    if (request.session.user && request.cookies[sessionCookieName]) {
+        request.session.destroy(null);
+        request.session = null;
+        response.clearCookie(sessionCookieName);
     }
-    res.redirect("/login");
+    response.redirect("/login");
 });
 app.use("/manage", sessionChecker, routerManage);
 app.use(function (_req, _res, next) {

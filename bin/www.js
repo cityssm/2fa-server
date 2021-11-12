@@ -1,7 +1,6 @@
-#!/usr/bin/env node
-import app from "../app.js";
+import { app } from "../app.js";
 import http from "http";
-import * as configFns from "../helpers/configFns.js";
+import * as configFunctions from "../helpers/configFns.js";
 import debug from "debug";
 const debugWWW = debug("2fa-server:www");
 const onError = (error) => {
@@ -26,7 +25,7 @@ const onListening = (server) => {
         : "port " + addr.port.toString();
     debugWWW("Listening on " + bind);
 };
-const httpPort = configFns.getProperty("application.httpPort");
+const httpPort = configFunctions.getProperty("application.httpPort");
 if (httpPort) {
     const httpServer = http.createServer(app);
     httpServer.listen(httpPort);

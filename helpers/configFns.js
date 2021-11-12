@@ -8,13 +8,13 @@ configFallbackValues.set("session.secret", "cityssm/2fa-server");
 configFallbackValues.set("session.maxAgeMillis", 20 * 60 * 1000);
 configFallbackValues.set("session.doKeepAlive", false);
 export function getProperty(propertyName) {
-    if (configOverrides.hasOwnProperty(propertyName)) {
+    if (Object.prototype.hasOwnProperty.call(configOverrides, propertyName)) {
         return configOverrides[propertyName];
     }
     const propertyNameSplit = propertyName.split(".");
     let currentObj = config;
-    for (let index = 0; index < propertyNameSplit.length; index += 1) {
-        currentObj = currentObj[propertyNameSplit[index]];
+    for (const element of propertyNameSplit) {
+        currentObj = currentObj[element];
         if (!currentObj) {
             return configFallbackValues.get(propertyName);
         }

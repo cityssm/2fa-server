@@ -1,29 +1,29 @@
-import get2FAUser from "../helpers/twoFactorDB/get2FAUser.js";
+import { get2FAUser } from "../helpers/twoFactorDB/get2FAUser.js";
 import { authenticator } from "otplib";
 import * as qrcode from "qrcode";
-export const handler = async (req, res) => {
-    const userName = req.session.user.userName;
+export const handler = async (request, response) => {
+    const userName = request.session.user.userName;
     const twoFactorUser = await get2FAUser(userName);
     if (!twoFactorUser) {
-        return res.redirect("/logout");
+        return response.redirect("/logout");
     }
     if (twoFactorUser.isRecentlySet) {
         const otpPathURL = authenticator.keyuri(userName, "Corporate Applications", twoFactorUser.secretKey);
-        qrcode.toDataURL(otpPathURL, (err, imageURL) => {
-            if (err) {
+        qrcode.toDataURL(otpPathURL, (error, imageURL) => {
+            if (error) {
                 twoFactorUser.isRecentlySet = false;
-                return res.render("manage", {
+                return response.render("manage", {
                     twoFactorUser
                 });
             }
-            return res.render("manage", {
+            return response.render("manage", {
                 twoFactorUser,
                 qrCode: imageURL
             });
         });
     }
     else {
-        return res.render("manage", {
+        return response.render("manage", {
             twoFactorUser
         });
     }

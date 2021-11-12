@@ -1,9 +1,11 @@
-import * as configFns from "./configFns.js";
+/* eslint-disable unicorn/prevent-abbreviations */
+
+import * as configFunctions from "./configFns.js";
 import * as adWebAuth from "@cityssm/ad-web-auth-connector";
 
 
-const adWebAuthConfig = configFns.getProperty("adWebAuthConfig");
-const userDomain = configFns.getProperty("application.userDomain");
+const adWebAuthConfig = configFunctions.getProperty("adWebAuthConfig");
+const userDomain = configFunctions.getProperty("application.userDomain");
 
 
 adWebAuth.setConfig(adWebAuthConfig);

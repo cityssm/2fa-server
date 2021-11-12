@@ -1,13 +1,13 @@
-import updateSecretKey from "../helpers/twoFactorDB/updateSecretKey.js";
+import { updateSecretKey } from "../helpers/twoFactorDB/updateSecretKey.js";
 import { authenticator } from "otplib";
 import * as qrcode from "qrcode";
 
 import type { RequestHandler } from "express";
 
 
-export const handler: RequestHandler = async (req, res) => {
+export const handler: RequestHandler = async (request, response) => {
 
-  const userName = req.session.user.userName;
+  const userName = request.session.user.userName;
   const secretKey = authenticator.generateSecret();
 
   const success = await updateSecretKey(userName, secretKey);
@@ -16,17 +16,17 @@ export const handler: RequestHandler = async (req, res) => {
 
     const otpPathURL = authenticator.keyuri(userName, "Corporate Applications", secretKey);
 
-    qrcode.toDataURL(otpPathURL, (err, imageURL: string) => {
+    qrcode.toDataURL(otpPathURL, (error, imageURL: string) => {
 
-      if (err) {
+      if (error) {
 
-        return res.json({
+        return response.json({
           success: true,
           secretKey
         });
       }
 
-      return res.json({
+      return response.json({
         success: true,
         secretKey,
         qrCode: imageURL
@@ -35,7 +35,7 @@ export const handler: RequestHandler = async (req, res) => {
     });
 
   } else {
-    return res.json({
+    return response.json({
       success: false
     });
   }

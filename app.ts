@@ -11,7 +11,7 @@ import rateLimit from "express-rate-limit";
 import session from "express-session";
 import sqlite from "connect-sqlite3";
 
-import * as configFns from "./helpers/configFns.js";
+import * as configFunctions from "./helpers/configFns.js";
 
 import routerLogin from "./routes/login.js";
 import routerManage from "./routes/manage.js";
@@ -89,7 +89,7 @@ app.use("/lib/fa5",
 const SQLiteStore = sqlite(session);
 
 
-const sessionCookieName = configFns.getProperty("session.cookieName");
+const sessionCookieName = configFunctions.getProperty("session.cookieName");
 
 
 // Initialize session
@@ -99,34 +99,34 @@ app.use(session({
     db: "sessions.db"
   }),
   name: sessionCookieName,
-  secret: configFns.getProperty("session.secret"),
+  secret: configFunctions.getProperty("session.secret"),
   resave: true,
   saveUninitialized: false,
   rolling: true,
   cookie: {
-    maxAge: configFns.getProperty("session.maxAgeMillis"),
+    maxAge: configFunctions.getProperty("session.maxAgeMillis"),
     sameSite: "strict"
   }
 }));
 
 // Clear cookie if no corresponding session
-app.use((req, res, next) => {
+app.use((request, response, next) => {
 
-  if (req.cookies[sessionCookieName] && !req.session.user) {
-    res.clearCookie(sessionCookieName);
+  if (request.cookies[sessionCookieName] && !request.session.user) {
+    response.clearCookie(sessionCookieName);
   }
 
   next();
 });
 
 // Redirect logged in users
-const sessionChecker = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+const sessionChecker = (request: express.Request, response: express.Response, next: express.NextFunction) => {
 
-  if (req.session.user && req.cookies[sessionCookieName]) {
+  if (request.session.user && request.cookies[sessionCookieName]) {
     return next();
   }
 
-  return res.redirect("/login");
+  return response.redirect("/login");
 };
 
 
@@ -136,31 +136,31 @@ const sessionChecker = (req: express.Request, res: express.Response, next: expre
 
 
 // Make config objects available to the templates
-app.use(function(req, res, next) {
-  res.locals.configFns = configFns;
-  res.locals.user = req.session.user;
-  res.locals.csrfToken = req.csrfToken();
+app.use(function(request, response, next) {
+  response.locals.configFns = configFunctions;
+  response.locals.user = request.session.user;
+  response.locals.csrfToken = request.csrfToken();
   next();
 });
 
 
-app.get("/", sessionChecker, (_req, res) => {
-  res.redirect("/manage");
+app.get("/", sessionChecker, (_request, response) => {
+  response.redirect("/manage");
 });
 
 app.use("/login", routerLogin);
 
-app.get("/logout", (req, res) => {
+app.get("/logout", (request, response) => {
 
-  if (req.session.user && req.cookies[sessionCookieName]) {
+  if (request.session.user && request.cookies[sessionCookieName]) {
 
-    req.session.destroy(null);
-    req.session = null;
-    res.clearCookie(sessionCookieName);
+    request.session.destroy(null);
+    request.session = null;
+    response.clearCookie(sessionCookieName);
 
   }
 
-  res.redirect("/login");
+  response.redirect("/login");
 });
 
 app.use("/manage", sessionChecker, routerManage);

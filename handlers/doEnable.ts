@@ -1,15 +1,15 @@
-import enable2FA from "../helpers/twoFactorDB/enable2FA.js";
+import { enable2FA } from "../helpers/twoFactorDB/enable2FA.js";
 
 import type { RequestHandler } from "express";
 
 
-export const handler: RequestHandler = async (req, res) => {
+export const handler: RequestHandler = async (request, response) => {
 
-  const userName = req.session.user.userName;
+  const userName = request.session.user.userName;
 
-  const success = enable2FA(userName);
+  const success = await enable2FA(userName);
 
-  res.json({
+  response.json({
     success
   });
 };
