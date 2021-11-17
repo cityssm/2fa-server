@@ -1,0 +1,21 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.22.1
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  SNYK-JS-ANSIREGEX-1583908:
+    - qrcode > yargs > string-width > strip-ansi > ansi-regex:
+        reason: None given
+        expires: '2021-12-17T19:45:02.231Z'
+    - qrcode > yargs > cliui > strip-ansi > ansi-regex:
+        reason: None given
+        expires: '2021-12-17T19:45:02.231Z'
+    - qrcode > yargs > cliui > string-width > strip-ansi > ansi-regex:
+        reason: None given
+        expires: '2021-12-17T19:45:02.231Z'
+    - qrcode > yargs > cliui > wrap-ansi > strip-ansi > ansi-regex:
+        reason: None given
+        expires: '2021-12-17T19:45:02.231Z'
+    - qrcode > yargs > cliui > wrap-ansi > string-width > strip-ansi > ansi-regex:
+        reason: None given
+        expires: '2021-12-17T19:45:02.231Z'
+patch: {}
